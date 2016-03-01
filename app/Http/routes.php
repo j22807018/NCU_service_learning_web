@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Route::get('auth', 'AuthController@auth');
+// Route::get('auth/login', 'AuthController@login');
+// Route::delete('auth/logout', 'AuthController@logout');
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes

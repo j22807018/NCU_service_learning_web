@@ -1,0 +1,7 @@
+# PHP packages
+/vendor
+composer.phar
+composer.lock
+
+# Operating system files
+.DS_Store
