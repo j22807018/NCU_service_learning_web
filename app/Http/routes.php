@@ -11,9 +11,16 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', array('uses' => 'HomeController@homePage','as' => 'homepage'));
+
+Route::get('login', array('as' => 'login', 'uses' => 'HomeController@login'));
+
+Route::get('logout', 'HomeController@logout');
+
+Route::post('login', 'HomeController@doLogin');
+
+Route::resource('course', 'CourseController');
+
 
 // Route::get('auth', 'AuthController@auth');
 // Route::get('auth/login', 'AuthController@login');
