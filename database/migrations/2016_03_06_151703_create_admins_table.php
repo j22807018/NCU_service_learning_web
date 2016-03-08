@@ -26,6 +26,6 @@ class CreateAdminsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('course_logs');
+        Schema::drop('admins');
     }
 }
