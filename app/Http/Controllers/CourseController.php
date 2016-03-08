@@ -14,7 +14,7 @@ class CourseController extends BaseController {
     {
         $courses = Course::paginate(10);
 
-        return View::make('layouts.index', array('courses' => $courses));
+        return view('layouts.index', array('courses' => $courses));
     }
 
     public function create()
@@ -28,7 +28,7 @@ class CourseController extends BaseController {
         $course->message = Input::old('message');
 
         
-        return View::make('courses.create', array('course' => $course));
+        return view('courses.create', array('course' => $course));
     }
 
     public function store()
@@ -60,22 +60,17 @@ class CourseController extends BaseController {
         $course->title = $title;
         $course->message = $message;
 
-        if ($course->save()){
-            if (Auth::attempt(array('email' => $email, 'password' => $password), true) )
-                return Redirect::route('course.index');
-            else
-                return 'login failed';
-        }
+        if ($course->save())
+            return Redirect::route('course.index');
         else
             return 'create failed';
-
     }
 
     public function show($id)
     {
         $course = Course::findOrFail($id);
    
-        return View::make('courses.show', array('course' => $course));
+        return view('courses.show', array('course' => $course));
     }
 
     public function edit($id)
@@ -90,7 +85,7 @@ class CourseController extends BaseController {
             $course->title = Input::old('title');
             $course->message = Input::old('message');
         }
-        return View::make('courses.create', array('course' => $course));
+        return view('courses.create', array('course' => $course));
     }
 
     public function update($id)
@@ -137,12 +132,5 @@ class CourseController extends BaseController {
                 return Redirect::route('course.index');
         }
         return 'error';
-    }
-
-    public function search()
-    {
-        $keyword = Input::get('keyword');
-        $courses = Course::search(trim($keyword));
-        return View::make('courses.index', array('courses' => $courses));
     }
 }
