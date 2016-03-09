@@ -11,15 +11,15 @@
 |
 */
 
-Route::get('/', array('uses' => 'HomeController@homePage','as' => 'homepage'));
+//Route::get('/', array('uses' => 'CourseController@index','as' => 'homepage'));
 
-Route::get('login', array('as' => 'login', 'uses' => 'HomeController@login'));
+//Route::post('login', 'HomeController@doLogin');
+Route::group(['middleware' => ['web']], function () {
 
-Route::get('logout', 'HomeController@logout');
-
-Route::post('login', 'HomeController@doLogin');
-
-Route::resource('course', 'CourseController');
+	Route::get('login', 'AuthController@auth');
+	Route::get('logout', 'AuthController@logout');
+    Route::resource('course', 'CourseController');
+});
 
 
 // Route::get('auth', 'AuthController@auth');

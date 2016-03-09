@@ -1,6 +1,13 @@
 <?php
+namespace App\Http\Controllers;
 
-class CourseController extends BaseController {
+use Validator;
+use App\File;
+use App\Course;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class CourseController extends Controller {
 
     /**
      * Setup the layout used by the controller.
@@ -8,7 +15,7 @@ class CourseController extends BaseController {
      * @return void
      */
     public function __construct() {
-        
+    }
 
     public function index()
     {
@@ -20,48 +27,47 @@ class CourseController extends BaseController {
     public function create()
     {
         $course = new Course;
-        $course->is_for_student = Input::old('is_for_student');
-        $course->is_for_teacher = Input::old('is_for_teacher');
-        $course->is_for_staff = Input::old('is_for_staff');
-        $course->is_announced = Input::old('is_announced');
-        $course->title = Input::old('title');
-        $course->message = Input::old('message');
-
+        // $course->is_for_student = $request->old('is_for_student');
+        // $course->is_for_teacher = $request->old('is_for_teacher');
+        // $course->is_for_staff = $request->old('is_for_staff');
+        // $course->is_announced = $request->old('is_announced');
+        // $course->title = $request->old('title');
+        // $course->message = $request->old('message');
         
         return view('courses.create', array('course' => $course));
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $is_for_student = Input::get('is_for_student');
-        $is_for_teacher = Input::get('is_for_teacher');
-        $is_for_staff = Input::get('is_for_staff');
-        $is_announced = Input::get('is_announced');
-        $title = Input::get('title');
-        $message = Input::get('message');
+        // $user = $request->input('user');
+        $is_for_student = $request->input('is_for_student');
+        $is_for_teacher = $request->input('is_for_teacher');
+        $is_for_staff = $request->input('is_for_staff');
+        $title = $request->input('title');
+        $message = $request->input('message');
 
         $validator = Validator::make(array(
             '標題' => $title,
             '內容' => $message),array(
             '標題' => 'required',
-            '內容' => 'required'
+            '內容' => 'required',
         ));
 
         $course = new Course;
         if ($validator->fails())
         {
-            return Redirect::route('course.create')->withInput()->withErrors($validator);
+            return redirect()->route('course.create')->withInput()->withErrors($validator);
         }
-        
+
         $course->is_for_student = $is_for_student;
         $course->is_for_teacher = $is_for_teacher;
         $course->is_for_staff = $is_for_staff;
-        $course->is_announced = $is_announced;
+        $course->is_announced = false;
         $course->title = $title;
         $course->message = $message;
 
         if ($course->save())
-            return Redirect::route('course.index');
+            return redirect()->route('course.index');
         else
             return 'create failed';
     }
@@ -76,26 +82,25 @@ class CourseController extends BaseController {
     public function edit($id)
     {
         $course = Course::findOrFail($id);
-      
-        if(Input::old() != null){
-            $course->is_for_student = Input::old('is_for_student');
-            $course->is_for_teacher = Input::old('is_for_teacher');
-            $course->is_for_staff = Input::old('is_for_staff');
-            $course->is_announced = Input::old('is_announced');
-            $course->title = Input::old('title');
-            $course->message = Input::old('message');
+        $request = request();
+        if($request->old() != null){
+            $course->is_for_student = $request->old('is_for_student');
+            $course->is_for_teacher = $request->old('is_for_teacher');
+            $course->is_for_staff = $request->old('is_for_staff');
+            $course->title = $request->old('title');
+            $course->message = $request->old('message');
         }
         return view('courses.create', array('course' => $course));
     }
 
-    public function update($id)
+    public function update(Request $request, $id)
     {
-        $is_for_student = Input::get('is_for_student');
-        $is_for_teacher = Input::get('is_for_teacher');
-        $is_for_staff = Input::get('is_for_staff');
-        $is_announced = Input::get('is_announced');
-        $title = Input::get('title');
-        $message = Input::get('message');
+        $is_for_student = $request->input('is_for_student');
+        $is_for_teacher = $request->input('is_for_teacher');
+        $is_for_staff = $request->input('is_for_staff');
+        $is_announced = $request->input('is_announced');
+        $title = $request->input('title');
+        $message = $request->input('message');
 
         $validator = Validator::make(array(
             '標題' => $title,
@@ -108,7 +113,7 @@ class CourseController extends BaseController {
 
         if ($validator->fails())
         {
-            return Redirect::route('course.edit', $id)->withInput()->withErrors($validator);
+            return redirect()->route('course.edit', $id)->withInput()->withErrors($validator);
         }
 
         $course->is_for_student = $is_for_student;
@@ -119,7 +124,7 @@ class CourseController extends BaseController {
         $course->message = $message;
 
         if ($course->save())
-            return Redirect::route('course.show', $course->id);
+            return redirect()->route('course.show', $course->id);
         else
             return 'create failed';
     }
@@ -129,7 +134,7 @@ class CourseController extends BaseController {
         if(($course = Course::findOrFail($id)))
         {
             if($course->delete())
-                return Redirect::route('course.index');
+                return redirect()->route('course.index');
         }
         return 'error';
     }

@@ -5,28 +5,28 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-// use App\SysUserRole;
-// use Auth;
-// use NCU\OpenID\NetIDReturn;
-// use NetID;
+use App\SysUserRole;
+use Auth;
+use NCU\OpenID\NetIDReturn;
+use NetID;
 
 class AuthController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth', ['only' => ['logout']]);
-        $this->middleware('guest', ['only' => ['login', 'auth']]);
+        $this->middleware('guest', ['only' => ['auth']]);
     }
     
-    public function login()
-    {
-        return view('auth.login');
-    }
+    // public function login()
+    // {
+    //     return view('auth.login');
+    // }
     
     public function logout()
     {
         Auth::logout();
-        return redirect('auth/login');
+        return redirect()->route('layouts.index');
     }
     
     public function auth()
@@ -49,16 +49,16 @@ class AuthController extends Controller
                 break;
         }
     
-        return redirect('auth/login')->with('error', '登入失敗');
+        return redirect()->route('layouts.index')->with('error', '登入失敗');
     }
     
     private function doLoginAndRedirect($rc)
     {
         if ($user = SysUserRole::find($rc->account)) {
             Auth::login($user);
-            return redirect()->intended('admin/projects');
+            return redirect()->route('layouts.index');
         }
     
-        return redirect('auth/login')->with('error', '您帳號尚未註冊為系統使用者');
+        return redirect()->route('layouts.index')->with('error', '您帳號尚未註冊為系統使用者');
     }
 }
