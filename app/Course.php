@@ -10,6 +10,6 @@ class Course extends Model
 
     public function files()
     {
-        return $this->hasMany('app/File', 'course_id');
+        return $this->hasMany('App\File', 'course_id');
     }
 }
