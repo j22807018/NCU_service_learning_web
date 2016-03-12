@@ -15,11 +15,12 @@ class CourseController extends Controller {
      * @return void
      */
     public function __construct() {
+        $this->middleware('admin', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
     }
 
     public function index()
     {
-        $courses = Course::paginate(10);
+        $courses = Course::paginate(5);
 
         return view('layouts.index', array('courses' => $courses));
     }
@@ -27,13 +28,14 @@ class CourseController extends Controller {
     public function create()
     {
         $course = new Course;
-        // $course->is_for_student = $request->old('is_for_student');
-        // $course->is_for_teacher = $request->old('is_for_teacher');
-        // $course->is_for_staff = $request->old('is_for_staff');
-        // $course->is_announced = $request->old('is_announced');
-        // $course->title = $request->old('title');
-        // $course->message = $request->old('message');
-        
+        $request = request();
+        if($request->old() != null){
+            $course->is_for_student = $request->old('is_for_student');
+            $course->is_for_teacher = $request->old('is_for_teacher');
+            $course->is_for_staff = $request->old('is_for_staff');
+            $course->title = $request->old('title');
+            $course->message = $request->old('message');
+        }
         return view('courses.create', array('course' => $course));
     }
 
@@ -74,9 +76,9 @@ class CourseController extends Controller {
 
     public function show($id)
     {
-        $course = Course::findOrFail($id);
-   
-        return view('courses.show', array('course' => $course));
+        $courses = Course::paginate(10);
+
+        return view('layouts.index', array('courses' => $courses));
     }
 
     public function edit($id)
@@ -124,7 +126,7 @@ class CourseController extends Controller {
         $course->message = $message;
 
         if ($course->save())
-            return redirect()->route('course.show', $course->id);
+            return redirect()->route('course.index', $course->id);
         else
             return 'create failed';
     }

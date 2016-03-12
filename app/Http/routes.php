@@ -19,6 +19,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('login', 'AuthController@auth');
 	Route::get('logout', 'AuthController@logout');
     Route::resource('course', 'CourseController');
+    Route::post('course/{id}/file_upload', array('uses' => 'FileController@upload', 'as' => 'file.upload'));
+    Route::get('file/{id}', array('uses' => 'FileController@download', 'as' => 'file.download'));
 });
 
 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\SysUserRole;
+use App\User;
 use Auth;
 use NCU\OpenID\NetIDReturn;
 use NetID;
@@ -26,7 +26,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('layouts.index');
+        return redirect()->route('course.index');
     }
     
     public function auth()
@@ -49,16 +49,18 @@ class AuthController extends Controller
                 break;
         }
     
-        return redirect()->route('layouts.index')->with('error', '登入失敗');
+        return redirect()->route('course.index')->with('error', '登入失敗');
     }
     
     private function doLoginAndRedirect($rc)
     {
-        if ($user = SysUserRole::find($rc->account)) {
+        if ( $user = User::where(['portal_id' => $rc->account])->first() ) {
             Auth::login($user);
-            return redirect()->route('layouts.index');
+        } else {
+            $user = User::create(['name' => $rc->account, 'email' => $rc->account, 'password' => $rc->account, 'portal_id' => $rc->account, 'is_admin' => false]);
+            Auth::login($user);
         }
     
-        return redirect()->route('layouts.index')->with('error', '您帳號尚未註冊為系統使用者');
+        return redirect()->route('course.index');
     }
 }
