@@ -2,64 +2,89 @@
 
 @section('content')
     <div style="padding:30px; margin-bottom:30px;">
-
-        @if (isset($course->id))
-            {{ Form::model($course, array('route' => array('course.update', $course->id), 'method' => 'put')) }}
-        @else
-            {{ Form::model($course, array('route' => 'course.store')) }}
-        @endif
-        <div class="form-horizontal">
-            <div class="form-group" >
-                <label class="col-sm-2 control-label">標題</label>
-                <div class="col-sm-4">
+        <div class="form-horizontal col-md-6 col-md-offset-3 well well-lg">
+            @if (isset($course->id))
+                {{ Form::model($course, array('route' => array('course.update', $course->id), 'method' => 'put')) }}
+            @else
+                {{ Form::model($course, array('route' => 'course.store')) }}
+            @endif
+        
+            <div class="form-group" style="padding-top:30px">
+                <label class="col-sm-3 control-label">標題</label>
+                <div class="col-sm-8">
                     <input name="title" type="text" class="form-control" value="{{{ $course->title }}}">
                 </div>
-
-                <label class="col-sm-2 control-label">使用對象</label>
-                <div class="col-sm-4">
+            </div>
+            <div class="form-group" >
+                <label class="col-sm-3 control-label">使用對象</label>
+                <div class="col-sm-8">
                     <input name="is_for_student" type="hidden" value="0">
                     <input name="is_for_teacher" type="hidden" value="0">
                     <input name="is_for_staff" type="hidden" value="0">
-                    @if ($course->is_for_student)
-                        <input name="is_for_student" type="checkbox" checked class="form-control" value="1">學生
-                    @else
-                        <input name="is_for_student" type="checkbox" class="form-control" value="1">學生
-                    @endif
+                    <div class="checkbox">
+                        @if ($course->is_for_student)
+                            <label class="col-sm-4">
+                                <input name="is_for_student" type="checkbox" checked value="1">學生
+                            </label>                    
+                        @else
+                            <label class="col-sm-4">
+                                <input name="is_for_student" type="checkbox" value="1">學生
+                            </label>                    
+                        @endif
 
-                    @if ($course->is_for_teacher)
-                        <input name="is_for_teacher" type="checkbox" checked class="form-control" value="1">老師
-                    @else
-                        <input name="is_for_teacher" type="checkbox" class="form-control" value="1">老師
-                    @endif
+                        @if ($course->is_for_teacher)
+                            <label class="col-sm-4">
+                                <input name="is_for_teacher" type="checkbox" checked value="1">老師
+                            </label>                    
+                        @else
+                            <label class="col-sm-4">
+                                <input name="is_for_teacher" type="checkbox" value="1">老師
+                            </label>                    
+                        @endif
 
-                    @if ($course->is_for_staff)
-                        <input name="is_for_staff" type="checkbox" checked class="form-control" value="1">員工
-                    @else
-                        <input name="is_for_staff" type="checkbox" class="form-control" value="1">員工
-                    @endif
-
+                        @if ($course->is_for_staff)
+                            <label class="col-sm-4">
+                                <input name="is_for_staff" type="checkbox" checked value="1">員工
+                            </label>                    
+                        @else
+                            <label class="col-sm-4">
+                                <input name="is_for_staff" type="checkbox" value="1">員工
+                            </label>
+                        @endif
+                    </div>
                 </div>
-                
             </div>
+            
             <div class="form-group" >
-                <label class="col-sm-2 control-label">內容</label>
-                <div class="col-sm-4">
-                    <input name="message" type="text" class="form-control" value="{{{ $course->message }}}">
+                <label class="col-sm-3 control-label">內容</label>
+                <div class="col-sm-8">
+                    <textarea name="message" type="text" class="form-control" value="{{{ $course->message }}}"></textarea>
                 </div>              
             </div>
-            @if (isset($course->id))
-                <button type="submit" class="col-sm-offset-10 col-sm-2 btn btn-primary ">修改</button>
-            @else
-                <button type="submit" class="col-sm-offset-10 col-sm-2 btn btn-primary ">創建</button>
+            <div class="row">
+                <div class="col-md-2 col-md-offset-3">
+                    @if (isset($course->id))
+                        <button type="submit" class="btn btn-primary btn-lg">修改</button>
+                    @else
+                        <button type="submit" class="btn btn-primary btn-lg">創建</button>
+                    @endif
+                </div>
+                <div class="col-md-2 col-md-offset-2">
+                    <a href="{{URL::route('course.index')}}"  class="btn btn-primary btn-lg">返回</a>
+                </div>
+            </div>
+            {{ Form::close() }}
+
+
+            @if($errors->all() != null)
+                <div class="alert alert-danger col-sm-8 col-sm-offset-2">
+                @foreach ($errors->all() as $message)
+                    <p>{{{ $message }}}</p>
+                @endforeach
+                </div>
             @endif
         </div>
-        {{ Form::close() }}
+        
     </div>
-    @if($errors->all() != null)
-        <div class="alert alert-danger">
-        @foreach ($errors->all() as $message)
-            <p>{{{ $message }}}</p>
-        @endforeach
-        </div>
-    @endif
+    
 @stop
