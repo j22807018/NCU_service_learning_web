@@ -16,6 +16,7 @@ class CreateFilesTable extends Migration
             $table->increments('id');
             $table->integer('course_id');
             $table->boolean('is_login_need');
+            $table->string('title');
             $table->string('file_path');
             $table->timestamps();
         });
