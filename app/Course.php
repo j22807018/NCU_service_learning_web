@@ -12,4 +12,9 @@ class Course extends Model
     {
         return $this->hasMany('App\File', 'course_id');
     }
+
+	public function courseLogs()
+    {
+        return $this->hasMany('App\CourseLog', 'course_id');
+    }
 }
