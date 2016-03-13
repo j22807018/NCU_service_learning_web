@@ -15,7 +15,7 @@ class FileController extends Controller {
      * @return void
      */
     public function __construct() {
-        $this->middleware('admin', ['only' => []]);
+        $this->middleware('admin', ['only' => ['upload', 'destroy']]);
     }
 
     public function upload(Request $request, $id)
@@ -40,6 +40,9 @@ class FileController extends Controller {
     public function download($id)
     {
         $file = File::findOrFail($id);
+        if ($file->is_login_need && !auth()->check())
+            return redirect()->route('course.index');
+        
         $header = [
             'Content-Type'              => 'application/octet-stream',
             'X-Content-Type-Options'    => 'nosniff',
@@ -49,5 +52,19 @@ class FileController extends Controller {
         $file->download_times += 1;
         $file->save();
         return response()->download($path, $file->title, $header);
+    }
+
+    public function destroy($id)
+    {
+        if(($file = File::findOrFail($id)))
+        {
+            $path = storage_path() . '/uploads/' . $file->course_id . '/' .$file->file_path;
+            if (file_exists($path)) {
+                unlink($path);
+            }
+            if($file->delete())
+                return redirect()->route('course.index');
+        }
+        return 'error';
     }
 }

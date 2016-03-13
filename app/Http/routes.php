@@ -11,22 +11,6 @@
 |
 */
 
-//Route::get('/', array('uses' => 'CourseController@index','as' => 'homepage'));
-
-//Route::post('login', 'HomeController@doLogin');
-Route::group(['middleware' => ['web']], function () {
-
-	Route::get('login', 'AuthController@auth');
-	Route::get('logout', 'AuthController@logout');
-    Route::resource('course', 'CourseController');
-    Route::post('course/{id}/file_upload', array('uses' => 'FileController@upload', 'as' => 'file.upload'));
-    Route::get('file/{id}', array('uses' => 'FileController@download', 'as' => 'file.download'));
-});
-
-
-// Route::get('auth', 'AuthController@auth');
-// Route::get('auth/login', 'AuthController@login');
-// Route::delete('auth/logout', 'AuthController@logout');
 
 /*
 |--------------------------------------------------------------------------
@@ -40,5 +24,12 @@ Route::group(['middleware' => ['web']], function () {
 */
 
 Route::group(['middleware' => ['web']], function () {
-    //
+    Route::get('/', 'CourseController@index');
+	Route::get('login', 'AuthController@auth');
+	Route::get('logout', 'AuthController@logout');
+    Route::resource('course', 'CourseController');
+    Route::post('course/{id}/file_upload', array('uses' => 'FileController@upload', 'as' => 'file.upload'));
+    Route::get('file/{id}', array('uses' => 'FileController@download', 'as' => 'file.download'));
+    Route::delete('file/{id}', array('uses' => 'FileController@destroy', 'as' => 'file.destroy'));
+    Route::get('course/{id}/log/', array('uses' => 'LogController@show', 'as' => 'log.show'));
 });

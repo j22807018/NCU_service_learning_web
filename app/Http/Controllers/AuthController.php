@@ -18,11 +18,6 @@ class AuthController extends Controller
         $this->middleware('guest', ['only' => ['auth']]);
     }
     
-    // public function login()
-    // {
-    //     return view('auth.login');
-    // }
-    
     public function logout()
     {
         Auth::logout();
