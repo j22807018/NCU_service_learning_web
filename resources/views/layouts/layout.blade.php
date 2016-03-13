@@ -11,7 +11,7 @@
     <body>
         @include('layouts.top_bar')
 
-        <div class="container-fluid" id="content" style="margin-top: 60;">        
+        <div class="container-fluid container" id="content" style="margin-top: 60;">        
           <div class="row">
             <div class="margintop rightborder real_content">
               @yield('content')

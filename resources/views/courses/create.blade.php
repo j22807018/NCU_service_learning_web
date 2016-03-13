@@ -58,7 +58,7 @@
             <div class="form-group" >
                 <label class="col-sm-3 control-label">內容</label>
                 <div class="col-sm-8">
-                    <textarea name="message" type="text" class="form-control" value="{{{ $course->message }}}"></textarea>
+                    <textarea name="message" type="text" class="form-control" value="{{ $course->message }}">{{ $course->message }}</textarea>
                 </div>              
             </div>
             <div class="row">
