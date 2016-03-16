@@ -28,8 +28,13 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('login', 'AuthController@auth');
 	Route::get('logout', 'AuthController@logout');
     Route::resource('course', 'CourseController');
+    Route::resource('course', 'CourseController');
     Route::post('course/{id}/file_upload', array('uses' => 'FileController@upload', 'as' => 'file.upload'));
     Route::get('file/{id}', array('uses' => 'FileController@download', 'as' => 'file.download'));
     Route::delete('file/{id}', array('uses' => 'FileController@destroy', 'as' => 'file.destroy'));
     Route::get('course/{id}/log/', array('uses' => 'LogController@show', 'as' => 'log.show'));
+
+    Route::get('questionnaire', array('uses' => 'QuestionnaireController@index', 'as' => 'questionnaire.index'));
+    Route::get('questionnaire/{id}', array('uses' => 'QuestionnaireController@show', 'as' => 'questionnaire.show'));
+    Route::post('questionnaire/{id}', array('uses' => 'QuestionnaireController@store', 'as' => 'questionnaire.store'));
 });

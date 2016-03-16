@@ -19,9 +19,15 @@ class CourseController extends Controller {
         $this->middleware('admin', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $courses = Course::paginate(5);
+        if($request->input('user') == 'for-student'){
+            $courses = Course::where('is_for_student', '=', true)->paginate(5);
+        } elseif ($request->input('user') == 'not-for-student') {
+            $courses = Course::where('is_for_student', '=', false)->paginate(5);
+        } else {
+            $courses = Course::paginate(5);
+        }    
 
         return view('layouts.index', array('courses' => $courses));
     }
@@ -215,7 +221,7 @@ class CourseController extends Controller {
                 }
             }
             if($course->delete())
-                return redirect()->route('course.index');
+                return redirect()->back();
         }
         return 'error';
     }

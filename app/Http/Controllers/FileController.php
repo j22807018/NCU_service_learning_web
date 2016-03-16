@@ -34,7 +34,7 @@ class FileController extends Controller {
                     'course_id' => $course->id, 'is_login_need' => $is_login_need, 'download_times' => 0]);
             }
         }
-        return redirect()->route('course.index');
+        return redirect()->back();
     }
 
     public function download($id)
@@ -63,7 +63,7 @@ class FileController extends Controller {
                 unlink($path);
             }
             if($file->delete())
-                return redirect()->route('course.index');
+                return redirect()->back();
         }
         return 'error';
     }
