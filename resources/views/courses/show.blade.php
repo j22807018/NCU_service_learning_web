@@ -64,9 +64,9 @@
                         <tr>
                             <td align='center' colspan="1" style="font-weight:bolder">教學內容</td>
                             <td colspan="6">
-                                <p style="font-weight:bolder">【課程標題】</p>
+                                <p style="font-weight:bolder">【&nbsp;課程標題&nbsp;】</p>
                                 <p style="word-break:break-word;">{{ $course->title }}</p>
-                                <p style="font-weight:bolder">【課程說明】</p>
+                                <p style="font-weight:bolder">【&nbsp;課程說明&nbsp;】</p>
                                 <p style="word-break:break-word; white-space:pre-line;">{{ $course->message }}</p>
                             </td>
                         </tr>
