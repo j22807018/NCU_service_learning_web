@@ -6,47 +6,36 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+            <h2 class="page-header">問卷統計</h2>
             <div align='center'>
-                {{ $questionnaires->links() }}
+                {{ $courses->links() }}
             </div>
-            <div class="table-responsive">
-                @if(count($questionnaires) == 0)
-                    <table class="table table-bordered" style="table-layout:fixed; margin-bottom:0px; background-color:#f9f9f9" align="center" valign="middle">
-                        <tr style="border-style:double">
-                            <td align='center' style="font-weight:bolder">尚無問卷</td>
+            <div class="table-responsive img-rounded">
+                <table class="table table-striped" style="table-layout:fixed" align="center" valign="middle">
+                    <thead style="background-color:DEEEFF;">
+                        <tr >
+                            <td align='center' style="font-weight:bolder" colspan="4"><p>課程標題</p></td>
+                            <td align='center' style="font-weight:bolder"><p>喜歡</p></td>
+                            <td align='center' style="font-weight:bolder"><p>普通</p></td>
+                            <td align='center' style="font-weight:bolder"><p>內容需要修改</p></td>
                         </tr>
-                    </table>
-                @else
-                    <table class="table table-bordered table-striped" style="table-layout:fixed" align="center" valign="middle">
-                        @foreach($questionnaires as $questionnaire)
-                            <tr style="border-style:double">
-                                <td align='center' style="font-weight:bolder">填寫帳號</td>
-                                <td align='center'>
-                                    @if($questionnaire->user_id != 0)
-                                        {{ $questionnaire->user->name }}
-                                    @else
-                                        無
-                                    @endif
+                    </thead>
+                    <tbody>
+                        @foreach($courses as $course)
+                            <tr >
+                                <td colspan="4">
+                                    <a href="{{URL::route('questionnaire.show', $course->id)}}" style="word-break:break-word; ">{{ $course->title }}</a>
                                 </td>
-                                <td align='center' style="font-weight:bolder">課程ID</td>
-                                <td align='center'><a href="{{URL::route('questionnaire.show', $questionnaire->course_id)}}">{{ $questionnaire->course_id }}</a></td>
-                                <td align='center' style="font-weight:bolder">滿意度</td>
-                                <td align='center'>
-                                    @if($questionnaire->satisfaction == 1)
-                                        喜歡
-                                    @elseif($questionnaire->satisfaction == 2)
-                                        普通
-                                    @elseif($questionnaire->satisfaction == 3)
-                                        內容需要修改
-                                    @endif
-                                </td>
+                                <td align='center'><p>{{ $course->questionnaires->where('satisfaction', 1)->count() }}</p></td>
+                                <td align='center'><p>{{ $course->questionnaires->where('satisfaction', 2)->count() }}</p></td>
+                                <td align='center'><p>{{ $course->questionnaires->where('satisfaction', 3)->count() }}</p></td>
                             </tr>
                         @endforeach
-                    </table>
-                @endif
+                    </tbody>
+                </table>
             </div>
             <div align='center'>
-                {{ $questionnaires->links() }}
+                {{ $courses->links() }}
             </div>
         </div>
     </div>

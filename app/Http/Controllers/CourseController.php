@@ -22,11 +22,11 @@ class CourseController extends Controller {
     public function index(Request $request)
     {
         if($request->input('user') == 'for-student'){
-            $courses = Course::where('is_for_student', '=', true)->paginate(5);
+            $courses = Course::where('is_for_student', '=', true)->paginate(15);
         } elseif ($request->input('user') == 'not-for-student') {
-            $courses = Course::where('is_for_student', '=', false)->paginate(5);
+            $courses = Course::where('is_for_student', '=', false)->paginate(15);
         } else {
-            $courses = Course::paginate(5);
+            $courses = Course::paginate(15);
         }    
 
         return view('layouts.index', array('courses' => $courses));
@@ -82,12 +82,14 @@ class CourseController extends Controller {
 
     public function show($id)
     {
-        return redirect()->route('course.index');
+        $course = Course::findOrFail($id);
+        return view('courses.show', array('course' => $course));
     }
 
     public function edit($id)
     {
         $course = Course::findOrFail($id);
+
         $request = request();
         if($request->old() != null){
             $course->is_for_student = $request->old('is_for_student');
@@ -184,6 +186,10 @@ class CourseController extends Controller {
                 $modifications['user_origin'] = $modifications['user_origin']."職員 ";
                 $modifications['user_new'] = $modifications['user_new']."職員 ";
             }
+            if($modifications['user_origin'] == $modifications['user_new']){
+                $modifications['user_origin'] = null;
+                $modifications['user_new'] = null;
+            }
             if($course->title != $old_data['title']){
                 $modifications['title_origin'] = $old_data['title'];
                 $modifications['title_new'] = $course->title;
@@ -204,7 +210,7 @@ class CourseController extends Controller {
                 $log->modifications = json_encode($modifications);
                 $log->save();
             }
-            return redirect()->route('course.index');
+            return redirect()->route('course.show', $course->id);
         }
         else
             return 'create failed';
@@ -221,7 +227,7 @@ class CourseController extends Controller {
                 }
             }
             if($course->delete())
-                return redirect()->back();
+                return redirect()->route('course.index');
         }
         return 'error';
     }

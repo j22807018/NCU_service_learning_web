@@ -17,4 +17,9 @@ class Course extends Model
     {
         return $this->hasMany('App\CourseLog', 'course_id');
     }
+
+    public function questionnaires()
+    {
+        return $this->hasMany('App\Questionnaire', 'course_id');
+    }
 }

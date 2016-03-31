@@ -15,7 +15,7 @@
     $.fn.fileinputLocales['zh-TW'] = {
         fileSingle: '單一檔案',
         filePlural: '複選檔案',
-        browseLabel: '檔案上傳',
+        browseLabel: '檔案瀏覽',
         removeLabel: '移除',
         removeTitle: '清除選取檔案',
         cancelLabel: '取消',

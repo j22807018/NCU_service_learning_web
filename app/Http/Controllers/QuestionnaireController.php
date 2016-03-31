@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Questionnaire;
+use App\Course;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -12,9 +13,8 @@ class QuestionnaireController extends Controller {
 
 	public function index()
 	{
-		$questionnaires = Questionnaire::orderBy('created_at', 'desc')->paginate(10);
-
-		return view('questionnaires.index', array('questionnaires' => $questionnaires));
+		$courses = Course::paginate(15);
+		return view('questionnaires.index', array('courses' => $courses));
 	}
 
 	public function store(Request $request, $id)
@@ -40,6 +40,6 @@ class QuestionnaireController extends Controller {
 	{
 		$questionnaires = Questionnaire::where('course_id', $id)->orderBy('created_at', 'desc')->paginate(10);
 		
-		return view('questionnaires.index', array('questionnaires' => $questionnaires));
+		return view('questionnaires.show', array('questionnaires' => $questionnaires));
 	}
 }

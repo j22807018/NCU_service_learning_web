@@ -6,7 +6,7 @@
         @yield('js_css')
         <meta name="csrf-param" content="_token">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>NCUSL</title>
+        <title>國立中央大學服務學習課程網</title>
     </head>
     <body>
         @include('layouts.top_bar')

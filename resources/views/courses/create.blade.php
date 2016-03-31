@@ -1,8 +1,13 @@
 @extends('layouts.layout')
 
 @section('content')
-    <div style="padding:30px; margin-bottom:30px;">
-        <div class="form-horizontal col-md-6 col-md-offset-3 well well-lg">
+    <div class="col-md-8 col-md-offset-2" style="margin-bottom:30px;">
+        @if (isset($course->id))
+            <h2 class="page-header">修改課程</h2>
+        @else
+            <h2 class="page-header">新增課程</h2>
+        @endif
+        <div class="form-horizontal well well-lg">
             @if (isset($course->id))
                 {{ Form::model($course, array('route' => array('course.update', $course->id), 'method' => 'put')) }}
             @else
@@ -10,7 +15,7 @@
             @endif
         
             <div class="form-group" style="padding-top:30px">
-                <label class="col-sm-3 control-label">標題</label>
+                <label class="col-sm-3 control-label">課程標題</label>
                 <div class="col-sm-8">
                     <input name="title" type="text" class="form-control" value="{{{ $course->title }}}">
                 </div>
@@ -44,11 +49,11 @@
 
                         @if ($course->is_for_staff)
                             <label class="col-sm-4">
-                                <input name="is_for_staff" type="checkbox" checked value="1">員工
+                                <input name="is_for_staff" type="checkbox" checked value="1">職員
                             </label>                    
                         @else
                             <label class="col-sm-4">
-                                <input name="is_for_staff" type="checkbox" value="1">員工
+                                <input name="is_for_staff" type="checkbox" value="1">職員
                             </label>
                         @endif
                     </div>
@@ -56,9 +61,9 @@
             </div>
             
             <div class="form-group" >
-                <label class="col-sm-3 control-label">內容</label>
+                <label class="col-sm-3 control-label">課程說明</label>
                 <div class="col-sm-8">
-                    <textarea name="message" type="text" class="form-control" value="{{ $course->message }}">{{ $course->message }}</textarea>
+                    <textarea name="message" type="text" class="form-control" value="{{ $course->message }}" style="height:150px">{{ $course->message }}</textarea>
                 </div>              
             </div>
             <div class="row">

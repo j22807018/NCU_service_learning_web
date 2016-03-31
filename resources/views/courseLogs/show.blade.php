@@ -6,56 +6,63 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+            <h2 class="page-header">課程內容修改紀錄</h2>
             <div align='center'>
                 {{ $logs->links() }}
             </div>
-            <div class="table-responsive">
-                @if(count($logs) == 0)
-                    <table class="table table-bordered" style="table-layout:fixed; margin-bottom:0px; background-color:#f9f9f9" align="center" valign="middle">
-                        <tr style="border-style:double">
-                            <td align='center' style="font-weight:bolder">無修改紀錄</td>
-                        </tr>
+            @if(count($logs) == 0)
+                <div  class="table-responsive img-rounded">
+                    <table class="table" style="table-layout:fixed; margin-bottom:0px; background-color:#f9f9f9" align="center" valign="middle">
+                        <thead>
+                            <tr style="background-color:DEEEFF;">
+                                <td align='center' style="font-weight:bolder"><p>無修改紀錄</p></td>
+                            </tr>
+                        </thead>
                     </table>
-                @else
-                    @foreach($logs as $log)
+                </div>
+            @else
+                @foreach($logs as $log)
+                    <div  class="table-responsive img-rounded">
                         <?php  $modifications = json_decode( $log->modifications, true); ?>
-                        <table class="table table-bordered" style="table-layout:fixed; margin-bottom:0px; background-color:#f9f9f9" align="center" valign="middle">
-                            <tr style="border-style:double">
-                                <td align='right' colspan="3">修改日期：{{ $modifications['update_time'] }}</td>
-                            </tr>
-                        </table>
-                        <table class="table table-bordered" style="table-layout:fixed" align="center" valign="middle">
+                        <table class="table" style="table-layout:fixed;" align="center" valign="middle">
+                            <thead>
+                                <tr style="background-color:DEEEFF;">
+                                    <td align='right' colspan="3"><p>修改日期：{{ $modifications['update_time'] }}</p></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background-color:#f9f9f9">
+                                    <td align='center' style="font-weight:bolder"><p>修改欄位</p></td>
+                                    <td align='center' style="font-weight:bolder"><p>修改前</p></td>
+                                    <td align='center' style="font-weight:bolder"><p>修改後</p></td>
+                                </tr>
                             
-                            <tr style="border-style:double; background-color:#f9f9f9">
-                                <td align='center' style="font-weight:bolder">修改欄位</td>
-                                <td align='center' style="font-weight:bolder">修改前</td>
-                                <td align='center' style="font-weight:bolder">修改後</td>
-                            </tr>
-                            @if($modifications['user_origin'] != null)
-                                <tr style="border-style:double">
-                                    <td align='center'>使用對象</td>
-                                    <td align='center'>{{ $modifications['user_origin'] }}</td>
-                                    <td align='center'>{{ $modifications['user_new'] }}</td>
-                                </tr>
-                            @endif
-                            @if($modifications['title_origin'] != null)
-                                <tr style="border-style:double">
-                                    <td align='center'>標題</td>
-                                    <td align='center'>{{ $modifications['title_origin'] }}</td>
-                                    <td align='center'>{{ $modifications['title_new'] }}</td>
-                                </tr>
-                            @endif
-                            @if($modifications['message_origin'] != null)
-                                <tr style="border-style:double">
-                                    <td align='center'>內文</td>
-                                    <td align='center'>{{ $modifications['message_origin'] }}</td>
-                                    <td align='center'>{{ $modifications['message_new'] }}</td>
-                                </tr>
-                            @endif
+                                @if($modifications['user_origin'] != null)
+                                    <tr>
+                                        <td align='center'>使用對象</td>
+                                        <td align='center'>{{ $modifications['user_origin'] }}</td>
+                                        <td align='center'>{{ $modifications['user_new'] }}</td>
+                                    </tr>
+                                @endif
+                                @if($modifications['title_origin'] != null)
+                                    <tr>
+                                        <td align='center'>課程標題</td>
+                                        <td style="word-break:break-word;">{{ $modifications['title_origin'] }}</td>
+                                        <td style="word-break:break-word;">{{ $modifications['title_new'] }}</td>
+                                    </tr>
+                                @endif
+                                @if($modifications['message_origin'] != null)
+                                    <tr>
+                                        <td align='center'>課程說明</td>
+                                        <td style="word-break:break-word; white-space:pre-line;">{{ $modifications['message_origin'] }}</td>
+                                        <td style="word-break:break-word; white-space:pre-line;">{{ $modifications['message_new'] }}</td>
+                                    </tr>
+                                @endif
+                            </tbody>
                         </table>
-                    @endforeach
-                @endif
-            </div>
+                    </div>
+                @endforeach
+            @endif
             <div align='center'>
                 {{ $logs->links() }}
             </div>
