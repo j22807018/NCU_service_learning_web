@@ -1,7 +1,7 @@
 <div class="navbar navbar-fixed-top navbar-inverse " role="navigation">
   <div class="container">
     <nav class="navbar-header navbar-inverse">
-      <a class="navbar-brand" style="color:white; font-size:25px; font-weight:bolder" href="{{URL::route('course.index')}}">中央大學服務學習課程網</a>
+      <a class="navbar-brand" style="color:white; font-size:25px; font-weight:bolder" href="{{URL::route('course.index')}}">服務學習微課程</a>
     </nav>
     <div class="collapse navbar-collapse">
     <ul class="nav navbar-nav navbar-right"style="font-size:15px;">

@@ -51,6 +51,30 @@
                                         <td style="word-break:break-word;">{{ $modifications['title_new'] }}</td>
                                     </tr>
                                 @endif
+                                @if($modifications['is_announced_origin'] != $modifications['is_announced_new'])
+                                    <tr>
+                                        <td align='center'>是否公告</td>
+                                        @if($modifications['is_announced_origin'] == false)
+                                            <td align='center'>否</td>
+                                            <td align='center'>是</td>
+                                        @else
+                                            <td align='center'>是</td>
+                                            <td align='center'>否</td>
+                                        @endif
+                                    </tr>
+                                @endif
+                                @if($modifications['is_login_need_origin'] != $modifications['is_login_need_new'])
+                                    <tr>
+                                        <td align='center'>瀏覽權限</td>
+                                        @if($modifications['is_login_need_origin'] == false)
+                                            <td align='center'>不限瀏覽權限</td>
+                                            <td align='center'>限中大portal帳號</td>
+                                        @else
+                                            <td align='center'>限中大portal帳號</td>
+                                            <td align='center'>不限瀏覽權限</td>
+                                        @endif
+                                    </tr>
+                                @endif
                                 @if($modifications['message_origin'] != null)
                                     <tr>
                                         <td align='center'>課程說明</td>

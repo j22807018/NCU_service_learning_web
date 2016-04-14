@@ -59,7 +59,23 @@
                     </div>
                 </div>
             </div>
-            
+
+            <div class="form-group" >
+                <label class="col-sm-3 control-label">瀏覽權限</label>
+                <div class="col-sm-8">
+                    <input name="is_login_need" type="hidden" value="0">
+                    <div class="checkbox">
+                        <label>
+                            @if ($course->is_login_need)
+                                <input name="is_login_need" type="checkbox" checked value="1">限中大portal帳號登入者
+                            @else
+                                <input name="is_login_need" type="checkbox" value="1">限中大portal帳號登入者
+                            @endif
+                        </label>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group" >
                 <label class="col-sm-3 control-label">課程說明</label>
                 <div class="col-sm-8">

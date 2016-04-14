@@ -7,6 +7,7 @@ use App\Course;
 use App\CourseLog;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class CourseController extends Controller {
 
@@ -21,13 +22,48 @@ class CourseController extends Controller {
 
     public function index(Request $request)
     {
-        if($request->input('user') == 'for-student'){
-            $courses = Course::where('is_for_student', '=', true)->paginate(15);
-        } elseif ($request->input('user') == 'not-for-student') {
-            $courses = Course::where('is_for_student', '=', false)->paginate(15);
+        if(auth()->check()){
+            if(auth()->user()->is_admin){
+                if($request->input('user') == 'for-student'){
+                    $courses = Course::where('is_for_student', true)
+                        ->paginate(15);
+                } elseif ($request->input('user') == 'not-for-student') {
+                    $courses = Course::where('is_for_student', false)
+                        ->paginate(15);
+                } else {
+                    $courses = Course::paginate(15);
+                }
+            } else {
+                if($request->input('user') == 'for-student'){
+                    $courses = Course::where('is_for_student', true)
+                        ->where('is_announced', true)
+                        ->paginate(15);
+                } elseif ($request->input('user') == 'not-for-student') {
+                    $courses = Course::where('is_for_student', false)
+                        ->where('is_announced', true)
+                        ->paginate(15);
+                } else {
+                    $courses = Course::where('is_announced', true)
+                        ->paginate(15);
+                }
+            }
         } else {
-            $courses = Course::paginate(15);
-        }    
+            if($request->input('user') == 'for-student'){
+                $courses = Course::where('is_for_student', true)
+                    ->where('is_announced', true)
+                    ->where('is_login_need', false)
+                    ->paginate(15);
+            } elseif ($request->input('user') == 'not-for-student') {
+                $courses = Course::where('is_for_student', false)
+                    ->where('is_announced', true)
+                    ->where('is_login_need', false)
+                    ->paginate(15);
+            } else {
+                $courses = Course::where('is_login_need', false)
+                    ->where('is_announced', true)
+                    ->paginate(15);
+            }
+        }
 
         return view('layouts.index', array('courses' => $courses));
     }
@@ -42,6 +78,7 @@ class CourseController extends Controller {
             $course->is_for_staff = $request->old('is_for_staff');
             $course->title = $request->old('title');
             $course->message = $request->old('message');
+            $course->is_login_need = $request->old('is_login_need');
         }
         return view('courses.create', array('course' => $course));
     }
@@ -53,6 +90,7 @@ class CourseController extends Controller {
         $is_for_staff = $request->input('is_for_staff');
         $title = $request->input('title');
         $message = $request->input('message');
+        $is_login_need = $request->input('is_login_need');
 
         $validator = Validator::make(array(
             '標題' => $title,
@@ -73,6 +111,7 @@ class CourseController extends Controller {
         $course->is_announced = false;
         $course->title = $title;
         $course->message = $message;
+        $course->is_login_need = $is_login_need;
 
         if ($course->save())
             return redirect()->route('course.index');
@@ -83,7 +122,13 @@ class CourseController extends Controller {
     public function show($id)
     {
         $course = Course::findOrFail($id);
-        return view('courses.show', array('course' => $course));
+
+        if($course->is_login_need && !auth()->check())
+            return redirect()->route('course.index');
+        else if(!$course->is_announced && !auth()->user()->is_admin)
+            return redirect()->route('course.index');
+        else
+            return view('courses.show', array('course' => $course));
     }
 
     public function edit($id)
@@ -97,6 +142,7 @@ class CourseController extends Controller {
             $course->is_for_staff = $request->old('is_for_staff');
             $course->title = $request->old('title');
             $course->message = $request->old('message');
+            $course->is_login_need = $request->old('is_login_need');
         }
         return view('courses.create', array('course' => $course));
     }
@@ -109,6 +155,7 @@ class CourseController extends Controller {
         $is_announced = $request->input('is_announced');
         $title = $request->input('title');
         $message = $request->input('message');
+        $is_login_need = $request->input('is_login_need');
 
         $validator = Validator::make(array(
             '標題' => $title,
@@ -130,7 +177,8 @@ class CourseController extends Controller {
             'is_for_staff' => $course->is_for_staff,
             'is_announced' => $course->is_announced,
             'title' => $course->title,
-            'message' => $course->message
+            'message' => $course->message,
+            'is_login_need' => $course->is_login_need
         );
         
 
@@ -140,15 +188,20 @@ class CourseController extends Controller {
         $course->is_announced = $is_announced;
         $course->title = $title;
         $course->message = $message;
+        $course->is_login_need = $is_login_need;
 
         if ($course->save()){
             $modifications = array(
                 'user_origin'=> "",
                 'title_origin' => null,
                 'message_origin' => null,
+                'is_announced_origin' => null,
+                'is_login_need_origin' => null,
                 'user_new'=> "",
                 'title_new' => null,
                 'message_new' => null,
+                'is_announced_new' => null,
+                'is_login_need_new' => null,
                 'update_time' => null
             );
 
@@ -200,8 +253,13 @@ class CourseController extends Controller {
                 $modifications['message_new'] = $course->message;
                 $count++;
             }
+            if($course->is_login_need != $old_data['is_login_need']){
+                $modifications['is_login_need_origin'] = $old_data['is_login_need'];
+                $modifications['is_login_need_new'] = $course->is_login_need;
+                $count++;
+            }
 
-            if($count != 0){
+            if($count > 0){
                 $modifications['update_time'] = $course->updated_at->toDateString();
 
                 $log = new CourseLog;
@@ -218,7 +276,7 @@ class CourseController extends Controller {
 
     public function destroy($id)
     {
-        if(($course = Course::findOrFail($id)))
+        if($course = Course::findOrFail($id))
         {
             foreach ($course->files as $file) {
                 $path = storage_path() . '/uploads/' . $file->course_id . '/' .$file->file_path;
@@ -230,5 +288,79 @@ class CourseController extends Controller {
                 return redirect()->route('course.index');
         }
         return 'error';
+    }
+
+    public function announce($id)
+    {
+        if($course = Course::findOrFail($id))
+        {
+            $course->is_announced = true;
+            $course->announce_date = Carbon::today()->toDateString();
+        }
+        if ($course->save()) {
+            $modifications = array(
+                'user_origin'=> "",
+                'title_origin' => null,
+                'message_origin' => null,
+                'is_announced_origin' => null,
+                'is_login_need_origin' => null,
+                'user_new'=> "",
+                'title_new' => null,
+                'message_new' => null,
+                'is_announced_new' => null,
+                'is_login_need_new' => null,
+                'update_time' => null
+            );
+            $modifications['is_announced_origin'] = false;
+            $modifications['is_announced_new'] = true;
+            $modifications['update_time'] = $course->updated_at->toDateString();
+
+            $log = new CourseLog;
+
+            $log->course_id = $course->id;
+            $log->editor_id = auth()->user()->id;
+            $log->modifications = json_encode($modifications);
+            $log->save();
+
+            return redirect()->route('course.show', $course->id);
+        }
+        else
+            return 'announce failed';
+    }
+    
+    public function hide($id)
+    {
+        if($course = Course::findOrFail($id))
+        {
+            $course->is_announced = false;
+            $course->announce_date = 0;
+        }
+        if ($course->save()){
+            $modifications = array(
+                'user_origin'=> "",
+                'title_origin' => null,
+                'message_origin' => null,
+                'is_announced_origin' => null,
+                'is_login_need_origin' => null,
+                'user_new'=> "",
+                'title_new' => null,
+                'message_new' => null,
+                'is_announced_new' => null,
+                'is_login_need_new' => null,
+                'update_time' => null
+            );
+            $modifications['is_announced_origin'] = true;
+            $modifications['is_announced_new'] = false;
+            $modifications['update_time'] = $course->updated_at->toDateString();
+
+            $log = new CourseLog;
+            $log->course_id = $course->id;
+            $log->editor_id = auth()->user()->id;
+            $log->modifications = json_encode($modifications);
+            $log->save();
+            return redirect()->route('course.show', $course->id);
+        }
+        else
+            return 'hide failed';
     }
 }

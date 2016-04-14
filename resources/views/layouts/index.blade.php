@@ -11,7 +11,7 @@
                 {{ $courses->links() }}
             </div>
             
-            <div class="table-responsive img-rounded" style="padding-bottom:20px">
+            <div class="table-responsive img-rounded" style="padding-bottom:35px">
                 <table class="table table-striped" style="table-layout:fixed; margin-bottom:0px" align="center" valign="middle">
                     <thead style="background-color:DEEEFF;">
                         <tr>
@@ -45,7 +45,12 @@
                                 {{ $course->created_at->toDateString() }}
                             </td>
                             <td colspan="4" style="word-break:break-word;">
-                                <a href="{{URL::route('course.show', $course->id)}}">{{ $course->title }}</a>
+                                @if(!$course->is_announced)
+                                    <p>【尚未公告】</p>
+                                @endif
+                                <a href="{{URL::route('course.show', $course->id)}}">
+                                    {{ $course->title }}
+                                </a>
                             </td>
                         </tr>
                     @endforeach

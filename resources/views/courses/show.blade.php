@@ -6,7 +6,15 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <h2 class="page-header">課程內容</h2>
+            <h2 class="page-header">課程內容
+                @if(auth()->check() && auth()->user()->isAdmin())
+                    <span style="font-size:20px; color:red">
+                    @if($course->is_login_need)
+                        &nbsp;&nbsp;&nbsp;※此課程需登入portal帳號
+                    @endif
+                    </span>
+                @endif
+            </h2>
             <div class="table-responsive img-rounded" style="padding-bottom:40px">
 
                 {{ Form::open(['route' => ['file.upload', $course->id], 'enctype' => 'multipart/form-data', 'style'=>'margin-bottom:0px']) }}
@@ -23,8 +31,14 @@
                                     @endif
                                 </p>
                             </td>
-                            <td align='center' colspan="1" style="font-weight:bolder">資料公告日期</td>
-                            <td align='center' colspan="1">{{ $course->created_at->toDateString() }}</td>
+                            <td align='center' colspan="1" style="font-weight:bolder">公告日期</td>
+                            <td align='center' colspan="1">
+                                @if($course->announce_date != 0)
+                                    {{ $course->announce_date }}
+                                @else
+                                    尚未公告
+                                @endif
+                            </td>
 
                             <td align='center' colspan="2">
                                 @if(auth()->check() && auth()->user()->isAdmin() ) 
@@ -33,6 +47,11 @@
                                       </button>
                                       <ul class="dropdown-menu" >
                                         <li><a href="{{URL::route('course.edit', $course->id)}}">內容修改</a></li>
+                                        @if($course->is_announced == 0)
+                                            <li><a href="{{URL::route('course.announce', $course->id)}}">公告此課程</a></li>
+                                        @else
+                                            <li><a href="{{URL::route('course.hide', $course->id)}}">隱藏此課程</a></li>
+                                        @endif
                                         <li><a data-toggle="modal" data-target="#modal{{$course->id}}">新增教學檔案</a></li>
                                         <li><a href="{{URL::route('log.show', $course->id)}}">修改紀錄</a></li>
                                         <li><a data-method="delete" href="{{URL::route('course.destroy', $course->id)}}">整筆刪除</a></li>

@@ -29,6 +29,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('logout', 'AuthController@logout');
     Route::resource('course', 'CourseController');
     Route::resource('course', 'CourseController');
+    Route::get('course/{id}/announce', array('uses' => 'CourseController@announce', 'as' => 'course.announce'));
+    Route::get('course/{id}/hide', array('uses' => 'CourseController@hide', 'as' => 'course.hide'));
     Route::post('course/{id}/file_upload', array('uses' => 'FileController@upload', 'as' => 'file.upload'));
     Route::get('file/{id}', array('uses' => 'FileController@download', 'as' => 'file.download'));
     Route::delete('file/{id}', array('uses' => 'FileController@destroy', 'as' => 'file.destroy'));
