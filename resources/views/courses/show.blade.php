@@ -33,7 +33,7 @@
                             </td>
                             <td align='center' colspan="1" style="font-weight:bolder">公告日期</td>
                             <td align='center' colspan="1">
-                                @if($course->announce_date != 0)
+                                @if($course->is_announced)
                                     {{ $course->announce_date }}
                                 @else
                                     尚未公告

@@ -42,12 +42,13 @@
                                 </p>
                             </td>
                             <td align='center'>
-                                {{ $course->created_at->toDateString() }}
+                                @if($course->is_announced)
+                                    {{ $course->announce_date }}
+                                @else
+                                    尚未公告
+                                @endif
                             </td>
                             <td colspan="4" style="word-break:break-word;">
-                                @if(!$course->is_announced)
-                                    <p>【尚未公告】</p>
-                                @endif
                                 <a href="{{URL::route('course.show', $course->id)}}">
                                     {{ $course->title }}
                                 </a>
