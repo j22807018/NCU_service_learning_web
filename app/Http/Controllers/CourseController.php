@@ -152,7 +152,6 @@ class CourseController extends Controller {
         $is_for_student = $request->input('is_for_student');
         $is_for_teacher = $request->input('is_for_teacher');
         $is_for_staff = $request->input('is_for_staff');
-        $is_announced = $request->input('is_announced');
         $title = $request->input('title');
         $message = $request->input('message');
         $is_login_need = $request->input('is_login_need');
@@ -185,7 +184,6 @@ class CourseController extends Controller {
         $course->is_for_student = $is_for_student;
         $course->is_for_teacher = $is_for_teacher;
         $course->is_for_staff = $is_for_staff;
-        $course->is_announced = $is_announced;
         $course->title = $title;
         $course->message = $message;
         $course->is_login_need = $is_login_need;
@@ -283,7 +281,15 @@ class CourseController extends Controller {
                 if (file_exists($path)) {
                     unlink($path);
                 }
+                $file->delete();
+             }
+            foreach ($course->courseLogs as $courseLog) {
+                $courseLog->delete();
             }
+            foreach ($course->questionnaires as $questionnaire) {
+                $questionnaire->delete();
+            }
+
             if($course->delete())
                 return redirect()->route('course.index');
         }
